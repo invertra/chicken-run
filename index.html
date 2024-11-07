@@ -8,7 +8,46 @@
 	<meta charset="utf-8">
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-	<title>chicken-run - Play on Poki</title>
+	<title>Chicken Run - Play on Poki</title>
+	<!-- poki include head -->
+	<style>
+		/* Hide Unity canvas in portrait mode and show message */
+		@media only screen and (orientation: portrait) {
+			#unity-container {
+				display: none;
+			}
+			#rotate-message {
+				display: block;
+			}
+		}
+
+		/* Show Unity canvas and hide message in landscape mode */
+		@media only screen and (orientation: landscape) {
+			#unity-container {
+				display: block;
+			}
+			#rotate-message {
+				display: none;
+			}
+		}
+
+		/* Rotate message style */
+		#rotate-message {
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			background-color: rgba(0, 0, 0, 0.8);
+			color: white;
+			font-size: 24px;
+			text-align: center;
+			line-height: 100vh;
+			z-index: 9999;
+			display: none;
+		}
+	</style>
+	<!-- poki include end -->
 
 	<script>
 	var buildUrl = 'Build';
@@ -18,7 +57,7 @@
 		maxRatio: 16 / 9,
 		minRatio: 9 / 16,
 
-		title: 'chicken-run',
+		title: 'Chicken Run',
 
 		thumbnail: 'https://img.poki-cdn.com/cdn-cgi/image/quality=80,width=100,height=100,fit=cover,g=0.5x0.5,f=auto/a398cd4e645b76810031bd97f8697414.png',
 		numScreenshots: 4,
@@ -36,16 +75,16 @@
 			},
 			"background_color": "#231F20",
 			"background_filename": "",
-			"code_filename": "3d66ff784478b4ce06f113a8d9512566.wasm",
+			"code_filename": "ff73222101c2a3320332255871c99afc.wasm",
 			"company_name": "Invertra",
-			"data_filename": "9d9f5a0f0a2e9aeb1d5397f574dd8f87.data",
+			"data_filename": "6c76ca47fe3a714ab4f3af3fca262c98.data",
 			"decompression_fallback": "",
 			"development_player": "false",
-			"framework_filename": "46d66e53390f2ea8abf7bcd672d49259.framework.js",
+			"framework_filename": "0eab87fbf809b1d12d8df7e44e8cce2c.framework.js",
 			"height": "600",
 			"loader_filename": "bb0d9ecdb05db3e84da20bd14a4f84dc.loader.js",
 			"memory_filename": "",
-			"product_name": "chicken-run",
+			"product_name": "Chicken Run",
 			"product_version": "1.0",
 			"splash_screen_style": "Dark",
 			"symbols_filename": "",
@@ -61,7 +100,38 @@
 	</script>
 </head>
 <body>
-	<script src="https://game-cdn.poki.com/loaders/v3/master-loader.js"></script>
+	<!-- poki include body -->
+	<div id="unity-container" style="width: 100%; height: 100%;">
+		<!-- Unity WebGL Content will go here -->
+		<canvas id="unity-canvas"></canvas>
+	</div>
+	
+	<!-- Overlay message when in portrait mode -->
+	<div id="rotate-message">
+		Please rotate your device.
+	</div>
+	<script>
+		// Function to check the orientation on window resize or load
+		function checkOrientation() {
+			if (window.innerHeight > window.innerWidth) {
+				document.getElementById("rotate-message").style.display = "block";
+				document.getElementById("unity-container").style.display = "none";
+			} else {
+				document.getElementById("rotate-message").style.display = "none";
+				document.getElementById("unity-container").style.display = "block";
+			}
+		}
+	
+		// Add event listeners for resize and load events
+		window.addEventListener("resize", checkOrientation);
+		window.addEventListener("load", checkOrientation);
+	
+		// Initial check
+		checkOrientation();
+	</script>
+	<!-- poki include end -->
+
+<script src="https://game-cdn.poki.com/loaders/v3/master-loader.js"></script>
 	<div style="position:absolute;top:0px;left:0px;z-index:9999;margin:10px">
 		This HTML will not be used on Poki.com. A new HTML will be auto generated from the JSON.
 	</div>

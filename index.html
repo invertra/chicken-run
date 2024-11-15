@@ -1,139 +1,122 @@
-<!-- Play on Poki -->
-<!-- NOTE:
-	this HTML will not be used on Poki.com, the HTML will be auto generated from the index.json.
-	If you wish to add custom HTML you can add this in the "extra_html" part of the JSON.
--->
 <!DOCTYPE html>
-<head>
-	<meta charset="utf-8">
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Chicken Run</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  </head>
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+      <div id="unity-footer">
+        <div id="unity-webgl-logo"></div>
+        <div id="unity-fullscreen-button"></div>
+        <div id="unity-build-title">Chicken Run</div>
+      </div>
+    </div>
+    <script>
 
-	<title>Chicken Run - Play on Poki</title>
-	<!-- poki include head -->
-	<style>
-		/* Hide Unity canvas in portrait mode and show message */
-		@media only screen and (orientation: portrait) {
-			#unity-container {
-				display: none;
-			}
-			#rotate-message {
-				display: block;
-			}
-		}
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var fullscreenButton = document.querySelector("#unity-fullscreen-button");
+      var warningBanner = document.querySelector("#unity-warning");
 
-		/* Show Unity canvas and hide message in landscape mode */
-		@media only screen and (orientation: landscape) {
-			#unity-container {
-				display: block;
-			}
-			#rotate-message {
-				display: none;
-			}
-		}
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
 
-		/* Rotate message style */
-		#rotate-message {
-			position: fixed;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			background-color: rgba(0, 0, 0, 0.8);
-			color: white;
-			font-size: 24px;
-			text-align: center;
-			line-height: 100vh;
-			z-index: 9999;
-			display: none;
-		}
-	</style>
-	<!-- poki include end -->
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/bb0d9ecdb05db3e84da20bd14a4f84dc.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/25b834c397fc48540376a8e29cb302c3.data",
+        frameworkUrl: buildUrl + "/0eab87fbf809b1d12d8df7e44e8cce2c.framework.js",
+        codeUrl: buildUrl + "/ff73222101c2a3320332255871c99afc.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "Invertra",
+        productName: "Chicken Run",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+      };
 
-	<script>
-	var buildUrl = 'Build';
-	window.config = {
-		loader: 'unity-2020',
-		debug: false,
-		maxRatio: 16 / 9,
-		minRatio: 9 / 16,
+      // By default, Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
 
-		title: 'Chicken Run',
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
 
-		thumbnail: 'https://img.poki-cdn.com/cdn-cgi/image/quality=80,width=100,height=100,fit=cover,g=0.5x0.5,f=auto/a398cd4e645b76810031bd97f8697414.png',
-		numScreenshots: 4,
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        container.className = "unity-mobile";
+        canvas.className = "unity-mobile";
 
-		metadata:{
-			"poki_template_version": 1,
-			"extra_html": {
-				"head": [
-					"<!-- will be copied to the resulting head //-->"
-				],
-				"body": [
-					"<!-- will be copied to the resulting body //-->",
-					"<!-- will also be copied to the resulting body //-->"
-				]
-			},
-			"background_color": "#231F20",
-			"background_filename": "",
-			"code_filename": "ff73222101c2a3320332255871c99afc.wasm",
-			"company_name": "Invertra",
-			"data_filename": "6c76ca47fe3a714ab4f3af3fca262c98.data",
-			"decompression_fallback": "",
-			"development_player": "false",
-			"framework_filename": "0eab87fbf809b1d12d8df7e44e8cce2c.framework.js",
-			"height": "600",
-			"loader_filename": "bb0d9ecdb05db3e84da20bd14a4f84dc.loader.js",
-			"memory_filename": "",
-			"product_name": "Chicken Run",
-			"product_version": "1.0",
-			"splash_screen_style": "Dark",
-			"symbols_filename": "",
-			"unity_version": "2022.3.38f1",
-			"use_data_caching": "true",
-			"use_threads": "false",
-			"use_wasm": "true",
-			"use_webgl_1_0": "false",
-			"use_webgl_2_0": "true",
-			"width": "960"
-		}
-	};
-	</script>
-</head>
-<body>
-	<!-- poki include body -->
-	<div id="unity-container" style="width: 100%; height: 100%;">
-		<!-- Unity WebGL Content will go here -->
-		<canvas id="unity-canvas"></canvas>
-	</div>
-	
-	<!-- Overlay message when in portrait mode -->
-	<div id="rotate-message">
-		Please rotate your device.
-	</div>
-	<script>
-		// Function to check the orientation on window resize or load
-		function checkOrientation() {
-			if (window.innerHeight > window.innerWidth) {
-				document.getElementById("rotate-message").style.display = "block";
-				document.getElementById("unity-container").style.display = "none";
-			} else {
-				document.getElementById("rotate-message").style.display = "none";
-				document.getElementById("unity-container").style.display = "block";
-			}
-		}
-	
-		// Add event listeners for resize and load events
-		window.addEventListener("resize", checkOrientation);
-		window.addEventListener("load", checkOrientation);
-	
-		// Initial check
-		checkOrientation();
-	</script>
-	<!-- poki include end -->
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        // config.devicePixelRatio = 1;
 
-<script src="https://game-cdn.poki.com/loaders/v3/master-loader.js"></script>
-	<div style="position:absolute;top:0px;left:0px;z-index:9999;margin:10px">
-		This HTML will not be used on Poki.com. A new HTML will be auto generated from the JSON.
-	</div>
-</body>
+
+      } else {
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+
+        canvas.style.width = "960px";
+        canvas.style.height = "600px";
+      }
+
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+              }).then((unityInstance) => {
+                loadingBar.style.display = "none";
+                fullscreenButton.onclick = () => {
+                  unityInstance.SetFullscreen(1);
+                };
+              }).catch((message) => {
+                alert(message);
+              });
+            };
+
+      document.body.appendChild(script);
+
+    </script>
+  </body>
 </html>
